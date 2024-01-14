@@ -16,7 +16,6 @@
   "plugins": ["@typescript-eslint", "react"],
   "rules": {
     "eqeqeq": ["error"],
-    "linebreak-style": ["error", "unix"],
     "quotes": ["error", "double"],
     "semi": ["error", "always"],
     "@typescript-eslint/ban-types": "off"
