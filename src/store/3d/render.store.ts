@@ -35,7 +35,7 @@ export default class RenderStore {
     this.isCanvasTriggered = false;
 
     this.initCanvas();
-    this.customControl = new CustomOrbitControl(this.camera, this.scene);
+    this.customControl = new CustomOrbitControl(this.camera);
     // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
     // Use arrow function to bind 'this' context
@@ -74,16 +74,13 @@ export default class RenderStore {
 class CustomOrbitControl {
   target: THREE.Vector3;
   camera: THREE.Camera;
-  scene: THREE.Scene;
 
   start2dPosition?: [number, number];
   current2dPosition?: [number, number];
 
-  constructor(camera: THREE.Camera, scene: THREE.Scene) {
+  constructor(camera: THREE.Camera) {
     this.target = camera.getWorldDirection(new THREE.Vector3());
     this.camera = camera;
-
-    this.scene = scene;
   }
 
   startControlling(start2dPosition: [number, number]) {
