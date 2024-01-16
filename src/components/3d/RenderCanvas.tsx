@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 // import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 import SceneStore from "../../store/3d/scene.store";
@@ -25,26 +25,13 @@ const RenderCanvas = () => {
         sceneStore.scene,
         cameraStore.camera
       );
-      const geometry = new THREE.SphereGeometry(
-        3,
-        50,
-        50,
-        0,
-        Math.PI * 2,
-        0,
-        Math.PI * 2
-      );
+      const geometry = new THREE.PlaneGeometry(3, 1);
       const material = new THREE.MeshBasicMaterial({ color: "pink" });
       sceneStore.addSceneMesh(geometry, material, "pinkBall");
     }
   }, [canvasRef]);
 
-  return (
-    <>
-      {" "}
-      <canvas className="w-full h-full" ref={canvasRef}></canvas>{" "}
-    </>
-  );
+  return <canvas className="w-full h-full" ref={canvasRef}></canvas>;
 };
 
 export default RenderCanvas;
