@@ -3,11 +3,12 @@ import React from "react";
 import * as THREE from "three";
 import CustomOrbitControl from "./control/customOrbitControl";
 import CustomZoomControl from "./control/customZoomControl";
+import CustomPanControl from "./control/customPanControl";
 
 export default class RenderStore {
   @observable renderer: THREE.WebGLRenderer;
-  scene: THREE.Scene;
-  camera: THREE.Camera;
+  @observable scene: THREE.Scene;
+  @observable camera: THREE.Camera;
   canvas: HTMLCanvasElement;
   target: THREE.Vector3;
 
@@ -19,11 +20,8 @@ export default class RenderStore {
   isPanControlTriggered: boolean;
   customPanControl: CustomPanControl;
 
-  constructor(
-    canvas: HTMLCanvasElement,
-    scene: THREE.Scene,
-    camera: THREE.Camera
-  ) {
+  constructor(canvas: HTMLCanvasElement) {
+    // renderer
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvas,
       antialias: true,
@@ -35,10 +33,18 @@ export default class RenderStore {
       canvas.getClientRects()[0].height
     );
 
-    this.scene = scene;
-    this.camera = camera;
+    this.scene = new THREE.Scene();
     this.canvas = canvas;
-    this.target = camera.getWorldDirection(new THREE.Vector3());
+
+    // camera
+    this.camera = new THREE.PerspectiveCamera(
+      50,
+      canvas.getClientRects()[0].width / canvas.getClientRects()[0].height,
+      0.1,
+      1000
+    );
+    this.camera.position.set(0, 0, 10);
+    this.target = this.camera.getWorldDirection(new THREE.Vector3());
 
     // all controls
     this.isOrbitControlTriggered = false;
@@ -47,7 +53,7 @@ export default class RenderStore {
     this.customZoomControl = new CustomZoomControl(this.camera, this.target);
     this.isPanControlTriggered = false;
     this.customPanControl = new CustomPanControl(this.camera, this.target);
-    this.initCanvasControls();
+    this.initRenderControls();
 
     // Use arrow function to bind 'this' context
     this.render = this.render.bind(this);
@@ -58,12 +64,11 @@ export default class RenderStore {
   render() {
     if (this.renderer && this.scene && this.camera) {
       requestAnimationFrame(this.render);
-
       this.renderer.render(this.scene, this.camera);
     }
   }
 
-  initCanvasControls() {
+  initRenderControls() {
     if (this.canvas) {
       this.canvas.onmousedown = (e) => {
         e.preventDefault();
@@ -100,82 +105,6 @@ export default class RenderStore {
       this.canvas.oncontextmenu = (e) => {
         e.preventDefault();
       };
-    }
-  }
-}
-
-class CustomPanControl {
-  target: THREE.Vector3;
-  camera: THREE.Camera;
-  current2dPosition?: [number, number];
-  normal: THREE.Vector3;
-  quaternion: THREE.Quaternion;
-
-  scene?: THREE.Scene;
-  meshTemp?: THREE.Mesh;
-  planeTemp?: THREE.PlaneGeometry;
-
-  xVector: THREE.Vector3;
-  yVector: THREE.Vector3;
-
-  constructor(camera: THREE.Camera, target: THREE.Vector3) {
-    this.target = target;
-    this.camera = camera;
-    this.normal = new THREE.Vector3();
-    this.quaternion = new THREE.Quaternion();
-    this.yVector = new THREE.Vector3();
-    this.xVector = new THREE.Vector3();
-  }
-  startControlling(current2dPosition: [number, number]) {
-    this.current2dPosition = current2dPosition;
-    this.normal.copy(this.camera.position).sub(this.target).normalize();
-    const dotProduct = this.normal.dot(new THREE.Vector3(0, 1, 0));
-
-    // Calculate the angle in radians using arccosine
-    const angle = Math.acos(THREE.MathUtils.clamp(dotProduct, -1, 1));
-    if (angle > 2) {
-      this.yVector.set(0, 0, 1);
-    } else if (angle > 0.5) {
-      this.yVector.set(0, 1, 0);
-    } else {
-      this.yVector.set(0, 0, 1);
-    }
-    this.yVector.normalize().multiplyScalar(0.01);
-
-    this.xVector
-      .crossVectors(this.normal, this.yVector)
-      .normalize()
-      .multiplyScalar(0.01);
-  }
-  moveToPosition(current2dPosition: [number, number]) {
-    if (this.current2dPosition) {
-      for (
-        let i = 0;
-        i < Math.abs(current2dPosition[0] - this.current2dPosition[0]);
-        i++
-      ) {
-        if (current2dPosition[0] > this.current2dPosition[0]) {
-          this.camera.position.add(this.xVector);
-          this.camera.lookAt(this.target.add(this.xVector));
-        } else {
-          this.camera.position.sub(this.xVector);
-          this.camera.lookAt(this.target.sub(this.xVector));
-        }
-      }
-      for (
-        let i = 0;
-        i < Math.abs(current2dPosition[1] - this.current2dPosition[1]);
-        i++
-      ) {
-        if (current2dPosition[1] > this.current2dPosition[1]) {
-          this.camera.position.add(this.yVector);
-          this.camera.lookAt(this.target.add(this.yVector));
-        } else {
-          this.camera.position.sub(this.yVector);
-          this.camera.lookAt(this.target.sub(this.yVector));
-        }
-      }
-      this.current2dPosition = current2dPosition;
     }
   }
 }
