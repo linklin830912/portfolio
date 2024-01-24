@@ -1,8 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-// import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
-// import SceneStore from "../../store/3d/scene.store";
-// import CameraStore from "../../store/3d/camera.store";
 import RenderSlice from "../../classes/3d/slices/renderSlice";
 import TextGeometry from "./geometries/TextGeometry";
 import RenderCanvasContext from "../../context/3d/renderCanvasContext";
