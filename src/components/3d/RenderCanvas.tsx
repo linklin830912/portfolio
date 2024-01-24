@@ -1,34 +1,51 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 // import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 // import SceneStore from "../../store/3d/scene.store";
 // import CameraStore from "../../store/3d/camera.store";
-import RenderStore from "../../store/3d/render.store";
+import RenderSlice from "../../classes/3d/slices/renderSlice";
+import TextGeometry from "./geometries/TextGeometry";
+import RenderCanvasContext from "../../context/3d/renderCanvasContext";
 
 const RenderCanvas = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasContainerRef = useRef<HTMLDivElement>(null);
+
+  const [renderSlice, setRenderSlice] = useState<RenderSlice>();
 
   useEffect(() => {
-    if (canvasRef.current) {
-      const renderStore = new RenderStore(canvasRef.current);
-      const material0 = new THREE.MeshStandardMaterial({ emissive: "pink" });
-      const material1 = new THREE.MeshStandardMaterial({ emissive: "red" });
-      const material2 = new THREE.MeshStandardMaterial();
-      const geometry0 = new THREE.PlaneGeometry(10, 0.5);
-      const geometry1 = new THREE.PlaneGeometry(5, 1);
-      const geometry2 = new THREE.PlaneGeometry(3, 2);
+    if (canvasContainerRef.current) {
+      const canvas = document.createElement("canvas");
+      canvasContainerRef.current.appendChild(canvas);
 
-      const mesh0 = new THREE.Mesh(geometry0, material0);
-      const mesh1 = new THREE.Mesh(geometry1, material0);
-      const mesh2 = new THREE.Mesh(geometry2, material1);
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
+      canvas.width = canvasContainerRef.current.getBoundingClientRect().width;
+      canvas.height = canvasContainerRef.current.getBoundingClientRect().height;
 
-      renderStore.scene.add(mesh0);
-      renderStore.scene.add(mesh1);
-      renderStore.scene.add(mesh2);
+      setRenderSlice(new RenderSlice(canvas));
     }
-  }, [canvasRef]);
+  }, [canvasContainerRef]);
 
-  return <canvas className="w-full h-full" ref={canvasRef}></canvas>;
+  const [text, setText] = useState<string>("");
+
+  const handleTextGeometryInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setText(e.target.value ?? "");
+  };
+
+  return (
+    <div className="w-full h-full bg-blue-200" ref={canvasContainerRef}>
+      <RenderCanvasContext.Provider value={{ renderSlice: renderSlice }}>
+        <TextGeometry textInput={text} />
+        <input
+          type="text"
+          className="bg-red-100"
+          onChange={handleTextGeometryInputChange}
+        />
+      </RenderCanvasContext.Provider>
+    </div>
+  );
 };
 
 export default RenderCanvas;

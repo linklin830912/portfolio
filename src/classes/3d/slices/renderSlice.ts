@@ -1,12 +1,13 @@
 import { observable } from "mobx";
 import React from "react";
 import * as THREE from "three";
-import CustomOrbitControl from "./control/customOrbitControl";
-import CustomZoomControl from "./control/customZoomControl";
-import CustomPanControl from "./control/customPanControl";
+import CustomOrbitControl from "../controls/customOrbitControl";
+import CustomZoomControl from "../controls/customZoomControl";
+import CustomPanControl from "../controls/customPanControl";
 
-export default class RenderStore {
+export default class RenderSlice {
   @observable renderer: THREE.WebGLRenderer;
+  @observable gl: WebGLRenderingContext | WebGL2RenderingContext;
   @observable scene: THREE.Scene;
   @observable camera: THREE.Camera;
   canvas: HTMLCanvasElement;
@@ -33,6 +34,7 @@ export default class RenderStore {
       canvas.getClientRects()[0].height
     );
 
+    this.gl = this.renderer.getContext();
     this.scene = new THREE.Scene();
     this.canvas = canvas;
 
