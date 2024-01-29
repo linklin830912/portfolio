@@ -1,0 +1,14 @@
+.button {
+  background-color: var(--mainColor0);
+  border-radius: 50px;
+  border: 1px solid var(--textColor0);
+  padding: 1px 15px;
+  width: 100%;
+}
+.button:hover {
+  background-color: var(--mainColor0_hover);
+}
+.button:active {
+  background-color: var(--textColor0);
+  color: var(--mainColor0);
+}

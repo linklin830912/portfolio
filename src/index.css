@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --mainColor0: rgb(96, 138, 206);
+  --mainColor0_hover: rgb(79, 112, 165);
+  --textColor0: rgb(255, 255, 255);
+}
