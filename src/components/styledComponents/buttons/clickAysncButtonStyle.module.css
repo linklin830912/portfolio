@@ -1,5 +1,6 @@
 .containerDiv {
   position: relative;
+  width: 100%;
 }
 .button {
   background-color: var(--mainColor0);

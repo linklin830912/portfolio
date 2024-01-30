@@ -1,6 +1,6 @@
 import React from "react";
 import RenderCanvas from "./components/3d/RenderCanvas";
-import MenuPanel from "./components/panels/MenuPanel";
+import MenuPanel from "./components/account/panels/MenuPanel";
 import {
   AccountContext,
   defaultAccountSlice,

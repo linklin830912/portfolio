@@ -5,14 +5,14 @@ import {
   CognitoUserSession,
   CognitoUserAttribute,
 } from "amazon-cognito-identity-js";
-import { makeAutoObservable, runInAction } from "mobx";
+import { action, makeAutoObservable, observable, runInAction } from "mobx";
 import poolData from "../../const/account/userPool";
 
-export enum AccountPanelStage {
-  loginAccount = 1,
-  forgetPassword = 2,
-  changeAccount = 3,
-}
+// export enum AccountPanelStage {
+//   loginAccount = 1,
+//   forgetPassword = 2,
+//   changeAccount = 3,
+// }
 
 export enum AccountStatus {
   login = 1,
@@ -24,15 +24,71 @@ class AccountSlice {
   user: CognitoUser | null;
   authDetails?: AuthenticationDetails;
   status: AccountStatus;
-  stage: AccountPanelStage;
+  email?: string;
 
   constructor() {
     this.pool = new CognitoUserPool(poolData);
     this.user = null;
     this.status = AccountStatus.anonymous;
-    this.stage = AccountPanelStage.loginAccount;
 
-    makeAutoObservable(this);
+    makeAutoObservable(this, {
+      status: observable,
+      user: observable,
+      email: observable,
+      authAccountWithCognito: action,
+      signUpAccountWithCognito: action,
+      loginAccountWithCognito: action,
+      logoutAccountWithCognito: action,
+      changeEmailWithCognito: action,
+      changePasswordWithCognito: action,
+      forgetAccountPasswordWithCognito: action,
+      confirmAccountPasswordWithCognito: action,
+    });
+  }
+
+  authAccountWithCognito(
+    email: string,
+    password: string,
+    callback: (isSuccess: boolean) => void
+  ) {
+    if (this.user && email !== "" && password !== "") {
+      const authDetails = new AuthenticationDetails({
+        Username: email,
+        Password: password,
+      });
+      this.user.authenticateUser(authDetails, {
+        onSuccess: () => {
+          this.status = AccountStatus.login;
+          callback(true);
+          this.email = email;
+        },
+        onFailure: () => {
+          this.status = AccountStatus.anonymous;
+          callback(false);
+          this.email = undefined;
+        },
+      });
+    } else {
+      this.status = AccountStatus.anonymous;
+      callback(true);
+      this.email = undefined;
+    }
+  }
+
+  getSession(callback: (session: CognitoUserSession | null) => void) {
+    if (this.user) {
+      this.user.getSession(
+        (err: Error | null, session: CognitoUserSession | null) => {
+          if (err) {
+            callback(null);
+          } else {
+            callback(session);
+          }
+        }
+      );
+    } else {
+      callback(null);
+    }
   }
 
   signUpAccountWithCognito(
@@ -41,7 +97,10 @@ class AccountSlice {
     callback: (isSuccess: boolean) => void
   ) {
     this.pool.signUp(email, password, [], [], (err) => {
-      callback(err === undefined);
+      callback(err === null || err === undefined);
+      if (err === null || err === undefined) {
+        this.email = email;
+      }
     });
     this.user = this.pool.getCurrentUser();
   }
@@ -65,140 +124,62 @@ class AccountSlice {
       });
     }
   }
-
-  async authAccountWithCognito(
-    email: string,
-    password: string,
+  changeEmailWithCognito(
+    newEmail: string,
     callback: (isSuccess: boolean) => void
   ) {
-    return await new Promise<CognitoUserSession | undefined>(() => {
-      if (this.user && email !== "" && password !== "") {
-        const authDetails = new AuthenticationDetails({
-          Username: email,
-          Password: password,
-        });
-        this.user.authenticateUser(authDetails, {
-          onSuccess: (session: CognitoUserSession) => {
-            runInAction(() => {
-              this.status = AccountStatus.login;
-            });
-            callback(true);
-          },
-          onFailure: (err: any) => {
-            runInAction(() => {
-              this.status = AccountStatus.anonymous;
-            });
-            callback(false);
-          },
-        });
-      } else {
-        runInAction(() => {
-          console.log("!!!!!!!!!!!!!!");
-          this.status = AccountStatus.anonymous;
-        });
-
-        callback(true);
-      }
-    });
+    if (this.user)
+      this.user.updateAttributes(
+        [new CognitoUserAttribute({ Name: "email", Value: newEmail })],
+        (err) => {
+          callback(err === null || err === undefined);
+          if (err === null || err === undefined) {
+            this.email = newEmail;
+          }
+        }
+      );
+  }
+  changePasswordWithCognito(
+    oldPassword: string,
+    newPassword: string,
+    callback: (isSuccess: boolean) => void
+  ) {
+    if (this.user)
+      this.user.changePassword(oldPassword, newPassword, (err) => {
+        callback(err === null || err === undefined);
+      });
   }
 
-  changeAccountWithCognito(data: {
-    email: string;
-    oldPassword: string;
-    newPassword: string;
-  }) {
-    this.getSession().then((session) => {
-      if (session && this.user) {
-        if (data.email !== "") {
-          this.user.updateAttributes(
-            [new CognitoUserAttribute({ Name: "email", Value: data.email })],
-            (err, result) => {
-              if (err) {
-                console.log("!!!err", err);
-              } else {
-                console.log("!!!result", result);
-              }
-            }
-          );
-        }
-
-        if (data.newPassword !== "" && data.oldPassword !== "") {
-          this.user.changePassword(
-            data.oldPassword,
-            data.newPassword,
-            (err, result) => {
-              if (err) {
-                console.log("!!!err", err);
-              } else {
-                console.log("!!!result", result);
-              }
-            }
-          );
-        }
-      }
-    });
-  }
-
-  async forgetAccountPasswordWithCognito(
+  forgetAccountPasswordWithCognito(
     email: string,
     callback: (isSuccess: boolean) => void
-  ): Promise<boolean> {
-    return await new Promise(() => {
-      this.user = new CognitoUser({
-        Username: email,
-        Pool: this.pool,
-      });
-
-      this.user.forgotPassword({
-        onSuccess: (data) => {
-          callback(true);
-        },
-        onFailure: (err) => {
-          callback(false);
-        },
-      });
+  ) {
+    const newUser = new CognitoUser({
+      Username: email,
+      Pool: this.pool,
     });
+
+    newUser.forgotPassword({
+      onSuccess: () => callback(true),
+      onFailure: () => callback(false),
+    });
+
+    this.user = newUser;
   }
 
-  async confirmAccountPasswordWithCognito(
+  confirmAccountPasswordWithCognito(
     code: string,
     newPassword: string,
     callback: (isSuccess: boolean) => void
-  ): Promise<boolean> {
-    return await new Promise((resolve, reject) => {
-      if (this.user) {
-        this.user.confirmPassword(code, newPassword, {
-          onSuccess: (data) => {
-            callback(true);
-          },
-          onFailure: (err) => {
-            callback(false);
-          },
-        });
-      } else {
-        callback(false);
-      }
-    });
-  }
-
-  async getSession() {
-    return await new Promise<CognitoUserSession | undefined>(
-      (resolve, reject) => {
-        if (this.user) {
-          this.user.getSession(
-            (err: Error | null, session: CognitoUserSession) => {
-              if (err) {
-                resolve(undefined);
-              } else {
-                resolve(session);
-              }
-            }
-          );
-        } else {
-          resolve(undefined);
-        }
-      }
-    );
+  ) {
+    if (this.user) {
+      this.user.confirmPassword(code, newPassword, {
+        onSuccess: () => callback(true),
+        onFailure: () => callback(false),
+      });
+    } else {
+      callback(false);
+    }
   }
 }
 

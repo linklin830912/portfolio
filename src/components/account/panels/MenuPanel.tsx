@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import ClickButton from "../styledComponents/buttons/ClickButton";
-import InformationInput from "../styledComponents/inputs/InformationInput";
+import React, { useState } from "react";
 import AccountPanel from "./AccountPanel";
 
 function MenuPanel() {
