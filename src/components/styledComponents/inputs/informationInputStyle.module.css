@@ -1,0 +1,55 @@
+.containerDiv {
+  position: relative;
+  padding: 18px 1px 0px 1px;
+  width: 100%;
+}
+.input {
+  position: relative;
+  width: 100%;
+  background-color: var(--mainColor0);
+  border: 1px solid var(--textColor0);
+  height: 28px;
+  border-radius: 3px;
+  outline: none;
+  color: var(--textColor0);
+  padding: 0px 5px;
+}
+
+.label {
+  position: absolute;
+  z-index: 1;
+  top: 20px;
+  left: 10px;
+  font-size: 15px;
+  pointer-events: none;
+  color: var(--textColor0);
+}
+
+.input:focus {
+  background-color: var(--mainColor0_hover);
+  border: 1.5px solid var(--textColor0);
+}
+.input:focus + .label {
+  top: 3px;
+  left: 3px;
+  font-size: 12px;
+  animation: onfocus 0.5s both;
+}
+.input_haveValue + .label {
+  top: 3px;
+  left: 3px;
+  font-size: 12px;
+}
+
+@keyframes onfocus {
+  0% {
+    top: 20px;
+    left: 10px;
+    font-size: 15px;
+  }
+  100% {
+    top: 3px;
+    left: 3px;
+    font-size: 12px;
+  }
+}

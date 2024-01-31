@@ -3,6 +3,7 @@ import * as THREE from "three";
 import RenderSlice from "../../classes/3d/slices/renderSlice";
 import TextGeometry from "./geometries/TextGeometry";
 import RenderCanvasContext from "../../context/3d/renderCanvasContext";
+import postTextContents from "../../api/textContent/postTextContents";
 
 const RenderCanvas = () => {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
@@ -32,7 +33,7 @@ const RenderCanvas = () => {
   };
 
   return (
-    <div className="w-full h-full bg-blue-200" ref={canvasContainerRef}>
+    <div className="w-full h-full" ref={canvasContainerRef}>
       <RenderCanvasContext.Provider value={{ renderSlice: renderSlice }}>
         <TextGeometry textInput={text} />
         <input

@@ -1,4 +1,4 @@
-import { observable } from "mobx";
+import { makeAutoObservable, observable } from "mobx";
 import React from "react";
 import * as THREE from "three";
 import CustomOrbitControl from "../controls/customOrbitControl";
@@ -6,10 +6,10 @@ import CustomZoomControl from "../controls/customZoomControl";
 import CustomPanControl from "../controls/customPanControl";
 
 export default class RenderSlice {
-  @observable renderer: THREE.WebGLRenderer;
-  @observable gl: WebGLRenderingContext | WebGL2RenderingContext;
-  @observable scene: THREE.Scene;
-  @observable camera: THREE.Camera;
+  renderer: THREE.WebGLRenderer;
+  gl: WebGLRenderingContext | WebGL2RenderingContext;
+  scene: THREE.Scene;
+  camera: THREE.Camera;
   canvas: HTMLCanvasElement;
   target: THREE.Vector3;
 
@@ -22,6 +22,12 @@ export default class RenderSlice {
   customPanControl: CustomPanControl;
 
   constructor(canvas: HTMLCanvasElement) {
+    makeAutoObservable(this, {
+      renderer: observable,
+      gl: observable,
+      scene: observable,
+      camera: observable,
+    });
     // renderer
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvas,
@@ -30,8 +36,8 @@ export default class RenderSlice {
     });
 
     this.renderer.setSize(
-      canvas.getClientRects()[0].width,
-      canvas.getClientRects()[0].height
+      canvas.getBoundingClientRect().width,
+      canvas.getBoundingClientRect().height
     );
 
     this.gl = this.renderer.getContext();
@@ -41,7 +47,8 @@ export default class RenderSlice {
     // camera
     this.camera = new THREE.PerspectiveCamera(
       50,
-      canvas.getClientRects()[0].width / canvas.getClientRects()[0].height,
+      canvas.getBoundingClientRect().width /
+        canvas.getBoundingClientRect().height,
       0.1,
       1000
     );
