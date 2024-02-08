@@ -5,14 +5,8 @@ import {
   CognitoUserSession,
   CognitoUserAttribute,
 } from "amazon-cognito-identity-js";
-import { action, makeAutoObservable, observable, runInAction } from "mobx";
-import poolData from "../../const/account/userPool";
-
-// export enum AccountPanelStage {
-//   loginAccount = 1,
-//   forgetPassword = 2,
-//   changeAccount = 3,
-// }
+import { action, makeAutoObservable, observable } from "mobx";
+import { cognitoUserPoolData } from "../../const/aws.const";
 
 export enum AccountStatus {
   login = 1,
@@ -27,7 +21,7 @@ class AccountSlice {
   email?: string;
 
   constructor() {
-    this.pool = new CognitoUserPool(poolData);
+    this.pool = new CognitoUserPool(cognitoUserPoolData);
     this.user = null;
     this.status = AccountStatus.anonymous;
 

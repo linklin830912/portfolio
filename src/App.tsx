@@ -5,14 +5,16 @@ import {
   AccountContext,
   defaultAccountSlice,
 } from "./context/account/accountContext";
+import SelectInput from "./components/styledComponents/inputs/SelectInput";
 
 const App = () => {
   return (
     <AccountContext.Provider value={{ accountSlice: defaultAccountSlice }}>
       <div className="w-[100vw] h-[100vh]">
-        <div className="top-0 left-0 relative w-full h-full">
+        {/* <div className="top-0 left-0 relative w-full h-full">
           <RenderCanvas />
-        </div>
+        </div> */}
+
         <div className="top-0 left-0 absolute w-full h-full pointer-events-none">
           <MenuPanel />
         </div>

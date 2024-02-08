@@ -4,6 +4,8 @@ import RenderSlice from "../../classes/3d/slices/renderSlice";
 import TextGeometry from "./geometries/TextGeometry";
 import RenderCanvasContext from "../../context/3d/renderCanvasContext";
 import postTextContents from "../../api/textContent/postTextContents";
+import ImageGeometry from "./geometries/ImageGeometry";
+import SvgGeometry from "./geometries/SvgGeometry";
 
 const RenderCanvas = () => {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
@@ -24,24 +26,24 @@ const RenderCanvas = () => {
     }
   }, [canvasContainerRef]);
 
-  const [text, setText] = useState<string>("");
+  // const [text, setText] = useState<string>("");
 
-  const handleTextGeometryInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setText(e.target.value ?? "");
-  };
+  // const handleTextGeometryInputChange = (
+  //   e: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   setText(e.target.value ?? "");
+  // };
 
   return (
     <div className="w-full h-full" ref={canvasContainerRef}>
-      <RenderCanvasContext.Provider value={{ renderSlice: renderSlice }}>
-        <TextGeometry textInput={text} />
-        <input
-          type="text"
-          className="bg-red-100"
-          onChange={handleTextGeometryInputChange}
-        />
-      </RenderCanvasContext.Provider>
+      <div className="w-full h-full" id="testest">
+        <TextGeometry />
+      </div>
+      {/* <RenderCanvasContext.Provider value={{ renderSlice: renderSlice }}>
+        <ImageGeometry />
+        <SvgGeometry />
+        <TextGeometry />
+      </RenderCanvasContext.Provider> */}
     </div>
   );
 };

@@ -1,0 +1,47 @@
+.containerDiv {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  position: relative;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  min-width: 110px;
+  height: fit-content;
+}
+.label {
+  font-size: 10px;
+}
+.hoverEventDiv {
+  position: absolute;
+  top: 15px;
+  width: 100%;
+  pointer-events: all;
+}
+.selectDiv {
+  padding: 0px 5px;
+  border: solid 1px var(--mainColor0);
+  border-radius: 3px;
+  line-height: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.optionDiv {
+  width: 100%;
+  top: 38px;
+  max-height: 150px;
+  overflow: scroll;
+  border: solid 1px var(--mainColor0);
+  display: none;
+  white-space: nowrap;
+}
+.hoverEventDiv:hover .optionDiv {
+  display: block;
+}
+
+.optionDiv div:hover {
+  background-color: var(--mainColor0_hover);
+  color: var(--textColor0);
+}

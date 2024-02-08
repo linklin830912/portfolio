@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AccountPanel from "./AccountPanel";
+import SelectInput from "../../styledComponents/inputs/SelectInput";
+import FontPanel from "../../font/FontPanel";
 
 function MenuPanel() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [fontUrl, setFontUrl] = useState<string>();
 
+  useEffect(() => {
+    console.log("!!!fontUrl", fontUrl);
+  });
   return (
     <div
       className={
@@ -18,6 +24,7 @@ function MenuPanel() {
         />
       )}
 
+      <FontPanel onFontUrlChange={setFontUrl} />
       <button
         className="absolute bottom-0 right-0 pointer-events-auto"
         onClick={() => {
