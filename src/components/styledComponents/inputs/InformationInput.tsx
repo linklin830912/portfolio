@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import styles from "./informationInputStyle.module.css";
 
 function InformationInput(props: any) {
-  const [haveValue, setHaveValue] = useState<boolean>(false);
+  const [haveValue, setHaveValue] = useState<boolean>(
+    props.value !== undefined
+  );
+
   return (
     <div className={styles.containerDiv}>
       <input

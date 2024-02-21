@@ -18,7 +18,7 @@ const AccountPanel = observer((props: accountPanelProps) => {
     useState<boolean>(false);
 
   return (
-    <div className="flex flex-col w-full h-fit relative">
+    <div className="bg-mainColor0 pointer-events-auto flex flex-col w-[20%] min-w-[280px] relative text-textColor0 opacity-80 rounded-md shadow-lg shadow-black-500/50 px-3 pt-2 pb-5">
       {isLoginLogoutAccountPanelOpen &&
         accountSlice.status === AccountStatus.anonymous && (
           <LoginAccountPanel />
@@ -39,6 +39,12 @@ const AccountPanel = observer((props: accountPanelProps) => {
           }
         />
       )}
+      <button
+        className="absolute right-1 top-[-3px] text-textColor0"
+        onClick={props.onClose}
+      >
+        ⨯
+      </button>
     </div>
   );
 });

@@ -42,7 +42,7 @@ function TextGeometry(props: textGeometryProps) {
 
       const geometry = new THREE.PlaneGeometry(2, 2);
       const mesh = new THREE.Mesh(geometry, material);
-      if (renderSlice) renderSlice.scene.add(mesh);
+      if (renderSlice) renderSlice?.scene?.add(mesh);
     }
   }, [textCanvasRef, props.textInput, renderSlice]);
 

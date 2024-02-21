@@ -6,28 +6,31 @@ import CustomZoomControl from "../controls/customZoomControl";
 import CustomPanControl from "../controls/customPanControl";
 
 export default class RenderSlice {
-  renderer: THREE.WebGLRenderer;
-  gl: WebGLRenderingContext | WebGL2RenderingContext;
-  scene: THREE.Scene;
-  camera: THREE.Camera;
-  canvas: HTMLCanvasElement;
-  target: THREE.Vector3;
+  renderer?: THREE.WebGLRenderer;
+  gl?: WebGLRenderingContext | WebGL2RenderingContext;
+  scene?: THREE.Scene;
+  camera?: THREE.Camera;
+  canvas?: HTMLCanvasElement;
+  target?: THREE.Vector3;
 
   // all controls
-  isOrbitControlTriggered: boolean;
-  customOrbitControl: CustomOrbitControl;
-  isZoomControlTriggered: boolean;
-  customZoomControl: CustomZoomControl;
-  isPanControlTriggered: boolean;
-  customPanControl: CustomPanControl;
+  isOrbitControlTriggered?: boolean;
+  customOrbitControl?: CustomOrbitControl;
+  isZoomControlTriggered?: boolean;
+  customZoomControl?: CustomZoomControl;
+  isPanControlTriggered?: boolean;
+  customPanControl?: CustomPanControl;
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor() {
     makeAutoObservable(this, {
       renderer: observable,
       gl: observable,
       scene: observable,
       camera: observable,
     });
+  }
+
+  init(canvas: HTMLCanvasElement) {
     // renderer
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvas,
@@ -56,13 +59,7 @@ export default class RenderSlice {
     this.target = this.camera.getWorldDirection(new THREE.Vector3());
 
     // all controls
-    this.isOrbitControlTriggered = false;
-    this.customOrbitControl = new CustomOrbitControl(this.camera, this.target);
-    this.isZoomControlTriggered = false;
-    this.customZoomControl = new CustomZoomControl(this.camera, this.target);
-    this.isPanControlTriggered = false;
-    this.customPanControl = new CustomPanControl(this.camera, this.target);
-    this.initRenderControls();
+    this.createRenderControls();
 
     // Use arrow function to bind 'this' context
     this.render = this.render.bind(this);
@@ -77,43 +74,55 @@ export default class RenderSlice {
     }
   }
 
-  initRenderControls() {
-    if (this.canvas) {
-      this.canvas.onmousedown = (e) => {
-        e.preventDefault();
-        if (e.button === 0) {
-          this.isOrbitControlTriggered = true;
-          this.customOrbitControl.startControlling([e.clientX, e.clientY]);
-        } else if (e.button === 1) {
-          this.isZoomControlTriggered = true;
-          this.customZoomControl.startControlling(e.clientY);
-        } else if (e.button === 2) {
-          this.isPanControlTriggered = true;
-          this.customPanControl.startControlling([e.clientX, e.clientY]);
-        }
-      };
-      this.canvas.onmousemove = (e) => {
-        e.preventDefault();
-        if (this.isOrbitControlTriggered) {
-          this.customOrbitControl.moveToPosition([e.clientX, e.clientY]);
-        } else if (this.isZoomControlTriggered) {
-          this.customZoomControl.moveToPosition(e.clientY);
-        } else if ((this, this.isPanControlTriggered)) {
-          this.customPanControl.moveToPosition([e.clientX, e.clientY]);
-        }
-      };
-      this.canvas.onmouseup = (e) => {
-        if (e.button === 0) {
-          this.isOrbitControlTriggered = false;
-        } else if (e.button === 1) {
-          this.isZoomControlTriggered = false;
-        } else if (e.button === 2) {
-          this.isPanControlTriggered = false;
-        }
-      };
-      this.canvas.oncontextmenu = (e) => {
-        e.preventDefault();
-      };
+  createRenderControls() {
+    if (this.camera && this.target) {
+      this.isOrbitControlTriggered = false;
+      this.customOrbitControl = new CustomOrbitControl(
+        this.camera,
+        this.target
+      );
+      this.isZoomControlTriggered = false;
+      this.customZoomControl = new CustomZoomControl(this.camera, this.target);
+      this.isPanControlTriggered = false;
+      this.customPanControl = new CustomPanControl(this.camera, this.target);
+
+      if (this.canvas) {
+        this.canvas.onmousedown = (e) => {
+          e.preventDefault();
+          if (e.button === 0) {
+            this.isOrbitControlTriggered = true;
+            this.customOrbitControl?.startControlling([e.clientX, e.clientY]);
+          } else if (e.button === 1) {
+            this.isZoomControlTriggered = true;
+            this.customZoomControl?.startControlling(e.clientY);
+          } else if (e.button === 2) {
+            this.isPanControlTriggered = true;
+            this.customPanControl?.startControlling([e.clientX, e.clientY]);
+          }
+        };
+        this.canvas.onmousemove = (e) => {
+          e.preventDefault();
+          if (this.isOrbitControlTriggered) {
+            this.customOrbitControl?.moveToPosition([e.clientX, e.clientY]);
+          } else if (this.isZoomControlTriggered) {
+            this.customZoomControl?.moveToPosition(e.clientY);
+          } else if ((this, this.isPanControlTriggered)) {
+            this.customPanControl?.moveToPosition([e.clientX, e.clientY]);
+          }
+        };
+        this.canvas.onmouseup = (e) => {
+          if (e.button === 0) {
+            this.isOrbitControlTriggered = false;
+          } else if (e.button === 1) {
+            this.isZoomControlTriggered = false;
+          } else if (e.button === 2) {
+            this.isPanControlTriggered = false;
+          }
+        };
+        this.canvas.oncontextmenu = (e) => {
+          e.preventDefault();
+        };
+      }
     }
   }
 }

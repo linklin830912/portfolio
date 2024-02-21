@@ -18,7 +18,7 @@ function ForgotAccountPanel(props: forgotAccountPanelProps) {
     <>
       {!isPanelOpen && (
         <button
-          className="text-[10px] w-full text-right top-3 relative underline underline-offset-1"
+          className="w-full text-xsFontSize text-textColor0 text-right relative underline underline-offset-1 mt-2"
           onClick={() => {
             setIsPanelOpen(true);
           }}

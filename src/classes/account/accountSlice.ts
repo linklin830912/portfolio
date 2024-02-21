@@ -4,6 +4,7 @@ import {
   CognitoUserPool,
   CognitoUserSession,
   CognitoUserAttribute,
+  CognitoIdToken,
 } from "amazon-cognito-identity-js";
 import { action, makeAutoObservable, observable, runInAction } from "mobx";
 import poolData from "../../const/account/userPool";
@@ -22,14 +23,27 @@ export enum AccountStatus {
 class AccountSlice {
   pool: CognitoUserPool;
   user: CognitoUser | null;
-  authDetails?: AuthenticationDetails;
+  // authDetails?: AuthenticationDetails;
   status: AccountStatus;
   email?: string;
 
   constructor() {
     this.pool = new CognitoUserPool(poolData);
-    this.user = null;
+    this.user = this.pool.getCurrentUser();
     this.status = AccountStatus.anonymous;
+
+    if (this.user) {
+      //user already logged in
+      let session;
+      this.user.getSession((err: Error, sess: CognitoUserSession | null) => {
+        session = sess;
+        if (session) {
+          const idTokenPayload = session.getIdToken().payload;
+          this.email = idTokenPayload.email;
+          this.status = AccountStatus.login;
+        }
+      });
+    }
 
     makeAutoObservable(this, {
       status: observable,
@@ -59,35 +73,26 @@ class AccountSlice {
       this.user.authenticateUser(authDetails, {
         onSuccess: () => {
           this.status = AccountStatus.login;
-          callback(true);
           this.email = email;
+
+          callback(true);
         },
         onFailure: () => {
           this.status = AccountStatus.anonymous;
-          callback(false);
           this.email = undefined;
+
+          localStorage.removeItem("cognitoUserSession");
+
+          callback(false);
         },
       });
     } else {
       this.status = AccountStatus.anonymous;
-      callback(true);
       this.email = undefined;
-    }
-  }
 
-  getSession(callback: (session: CognitoUserSession | null) => void) {
-    if (this.user) {
-      this.user.getSession(
-        (err: Error | null, session: CognitoUserSession | null) => {
-          if (err) {
-            callback(null);
-          } else {
-            callback(session);
-          }
-        }
-      );
-    } else {
-      callback(null);
+      localStorage.removeItem("cognitoUserSession");
+
+      callback(true);
     }
   }
 

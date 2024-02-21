@@ -47,11 +47,11 @@ const LoginAccountPanel = observer(() => {
           setPassword(e.target.value ?? "");
         }}
       />
-      <div className="flex flex-row items-center justify-between w-full h-full mt-3">
+      <div className="flex flex-row items-center justify-between w-full h-full mt-2 relative">
         <ClickAysncButton onClick={handleSignup} status={signupButtonStatus}>
           Sign-up
         </ClickAysncButton>
-        <div className="px-3">/</div>
+        <div className="px-3 text-textColor0">/</div>
         <ClickAysncButton onClick={handleLogin} status={loginButtonStatus}>
           Login
         </ClickAysncButton>

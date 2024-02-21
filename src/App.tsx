@@ -1,22 +1,24 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import RenderCanvas from "./components/3d/RenderCanvas";
-import MenuPanel from "./components/account/panels/MenuPanel";
 import {
   AccountContext,
   defaultAccountSlice,
 } from "./context/account/accountContext";
+import MenuPanel from "./components/menu/MenuPanel";
+import Layout from "./components/styledComponents/layout/Layout";
+import TextGeometry from "./components/3d/geometries/CustomTextGeometry";
+import { OpentypeLoadFontClass } from "./classes/Opentype/opentypeLoadFontClass";
+import * as THREE from "three";
+import RenderCanvasContext from "./context/3d/renderCanvasContext";
+import RenderSlice from "./classes/3d/slices/renderSlice";
+import SelectInput from "./components/styledComponents/inputs/SelectInput";
 
 const App = () => {
   return (
     <AccountContext.Provider value={{ accountSlice: defaultAccountSlice }}>
-      <div className="w-[100vw] h-[100vh]">
-        <div className="top-0 left-0 relative w-full h-full">
-          <RenderCanvas />
-        </div>
-        <div className="top-0 left-0 absolute w-full h-full pointer-events-none">
-          <MenuPanel />
-        </div>
-      </div>
+      <RenderCanvasContext.Provider value={{ renderSlice: new RenderSlice() }}>
+        <Layout childCanvas={<RenderCanvas />} childMenu={<MenuPanel />} />
+      </RenderCanvasContext.Provider>
     </AccountContext.Provider>
   );
 };

@@ -42,7 +42,7 @@ function SendEmailPanel(props: sendEmailPanelProps) {
         >
           Cancel
         </ClickButton>
-        <div className="px-3">/</div>
+        <div className="px-3 text-textColor0">/</div>
         <ClickAysncButton
           onClick={handleAccountSendMail}
           status={sendEmailStatus}

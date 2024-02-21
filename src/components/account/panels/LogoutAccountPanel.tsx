@@ -16,10 +16,12 @@ function LogoutAccountPanel() {
     });
   };
   return (
-    <div className="flex flex-col items-center justify-between w-full h-full mt-1">
+    <div className="flex flex-col items-center justify-between w-full h-full">
       <div className="w-full flex flex-col justify-center items-start pb-2">
-        <label className="text-[12px]">email</label>
-        <div>{accountSlice.email}</div>
+        <label className="text-xsFontSize text-textColor0">email:</label>
+        <div className="text-smFontSize text-textColor0 text-center w-full">
+          {accountSlice.email}
+        </div>
       </div>
 
       <ClickAysncButton onClick={handleLogout} status={logoutButtonStatus}>

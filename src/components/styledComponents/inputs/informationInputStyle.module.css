@@ -1,6 +1,6 @@
 .containerDiv {
   position: relative;
-  padding: 18px 1px 0px 1px;
+  padding: 12px 0px 0px 0px;
   width: 100%;
 }
 .input {
@@ -8,19 +8,25 @@
   width: 100%;
   background-color: var(--mainColor0);
   border: 1px solid var(--textColor0);
-  height: 28px;
   border-radius: 3px;
   outline: none;
   color: var(--textColor0);
-  padding: 0px 5px;
+  padding: 1px 5px;
+  font-size: var(--smFontSize);
 }
 
+* {
+  --labelTop: 18px;
+  --onFocusLabelTop: 0px;
+  --labelLeft: 3px;
+  --onFocusLabelLeft: 0px;
+}
 .label {
   position: absolute;
   z-index: 1;
-  top: 20px;
-  left: 10px;
-  font-size: 15px;
+  top: var(--labelTop);
+  left: 3px;
+  font-size: var(--smFontSize);
   pointer-events: none;
   color: var(--textColor0);
 }
@@ -30,26 +36,26 @@
   border: 1.5px solid var(--textColor0);
 }
 .input:focus + .label {
-  top: 3px;
-  left: 3px;
-  font-size: 12px;
+  top: var(--onFocusLabelTop);
+  left: var(--labelLeft);
+  font-size: var(--xsFontSize);
   animation: onfocus 0.5s both;
 }
 .input_haveValue + .label {
-  top: 3px;
-  left: 3px;
-  font-size: 12px;
+  top: var(--onFocusLabelTop);
+  left: var(--labelLeft);
+  font-size: var(--xsFontSize);
 }
 
 @keyframes onfocus {
   0% {
-    top: 20px;
-    left: 10px;
-    font-size: 15px;
+    top: var(--labelTop);
+    left: var(--labelLeft);
+    font-size: var(--smFontSize);
   }
   100% {
-    top: 3px;
-    left: 3px;
-    font-size: 12px;
+    top: var(--onFocusLabelTop);
+    left: var(--labelLeft);
+    font-size: var(--xsFontSize);
   }
 }

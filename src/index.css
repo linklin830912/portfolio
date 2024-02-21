@@ -6,4 +6,14 @@
   --mainColor0: rgb(96, 138, 206);
   --mainColor0_hover: rgb(79, 112, 165);
   --textColor0: rgb(255, 255, 255);
+
+  --xsFontSize: 10px;
+  --smFontSize: 12px;
+  --mdFontSize: 16px;
+  --lgFontSize: 18px;
+  --xlFontSize: 26px;
+  --xl2FontSize: 36px;
+
+  padding: 0;
+  margin: 0;
 }

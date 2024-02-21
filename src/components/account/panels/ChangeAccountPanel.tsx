@@ -54,7 +54,7 @@ const ChangeAccountPanel = observer((props: changeAccountPanelProps) => {
     <>
       {!isPanelOpen && (
         <button
-          className="text-[10px] w-full text-right top-3 relative underline underline-offset-1"
+          className="w-full text-xsFontSize text-textColor0 text-right underline underline-offset-1 mt-2"
           onClick={() => {
             setIsPanelOpen(true);
           }}
@@ -95,7 +95,7 @@ const ChangeAccountPanel = observer((props: changeAccountPanelProps) => {
             >
               Cancel
             </ClickButton>
-            <div className="px-3">/</div>
+            <div className="px-3 text-textColor0">/</div>
             <ClickAysncButton
               onClick={handleAccountUpdate}
               status={updateAccountStatus}
